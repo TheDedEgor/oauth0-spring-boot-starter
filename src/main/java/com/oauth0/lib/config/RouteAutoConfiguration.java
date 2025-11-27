@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 @AutoConfiguration
-@AutoConfigureAfter({OauthAutoConfiguration.class, DataSourceAutoConfiguration.class})
+@AutoConfigureAfter({OauthAutoConfiguration.class, DatabaseAutoConfiguration.class})
 public class RouteAutoConfiguration {
 
     @Bean
