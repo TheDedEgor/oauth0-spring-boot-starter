@@ -7,14 +7,13 @@ import com.oauth0.lib.service.OauthService;
 import com.oauth0.lib.service.OauthSessionService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 @AutoConfiguration
-@AutoConfigureAfter({OauthAutoConfiguration.class, DatabaseAutoConfiguration.class})
+@AutoConfigureAfter({OauthAutoConfiguration.class, OauthDatabaseAutoConfiguration.class})
 public class RouteAutoConfiguration {
 
     @Bean

@@ -1,3 +1,3 @@
 com.oauth0.lib.config.OauthAutoConfiguration
-com.oauth0.lib.config.DatabaseAutoConfiguration
+com.oauth0.lib.config.OauthDatabaseAutoConfiguration
 com.oauth0.lib.config.RouteAutoConfiguration

@@ -7,7 +7,7 @@ import com.oauth0.lib.dto.request.CreateAuthSessionDTO;
 import com.oauth0.lib.dto.response.AuthSessionDTO;
 import com.oauth0.lib.dto.response.UserDTO;
 import com.oauth0.lib.service.AuthorizationEventPublisher;
-import com.oauth0.lib.service.CookieService;
+import com.oauth0.lib.service.OauthCookieService;
 import com.oauth0.lib.service.OauthService;
 import com.oauth0.lib.service.OauthSessionService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -46,7 +46,7 @@ public class RouteController {
         // Сохраняем время до скольки действительна сессия
         oauthService.saveValidUntil(authSession.getSessionId(), authSession.getValidUntil());
 
-        var cookie = CookieService.create(sessionInfoDTO.getUuid());
+        var cookie = OauthCookieService.create(sessionInfoDTO.getUuid());
         response.addCookie(cookie);
 
         return authSession;

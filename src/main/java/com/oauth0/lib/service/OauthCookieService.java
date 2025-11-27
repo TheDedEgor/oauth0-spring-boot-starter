@@ -2,7 +2,7 @@ package com.oauth0.lib.service;
 
 import jakarta.servlet.http.Cookie;
 
-public class CookieService {
+public class OauthCookieService {
     public static Cookie create(String uuid) {
         var cookie = new Cookie("OAUTH_SESSION_ID", uuid);
         cookie.setHttpOnly(true);
