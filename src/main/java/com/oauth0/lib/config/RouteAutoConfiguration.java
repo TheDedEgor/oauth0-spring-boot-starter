@@ -31,8 +31,8 @@ public class RouteAutoConfiguration {
     }
 
     @Bean
-    public AuthorizationEventPublisher authorizationEventPublisher() {
-        return new AuthorizationEventPublisher();
+    public AuthorizationEventPublisher authorizationEventPublisher(OauthService oauthService) {
+        return new AuthorizationEventPublisher(oauthService);
     }
 
     @Bean

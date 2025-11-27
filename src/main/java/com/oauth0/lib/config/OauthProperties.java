@@ -26,6 +26,8 @@ public class OauthProperties {
     private String authEndpoint = "/api/oauth0/auth";
     @NotBlank(message = "URL обязательно должен быть указан")
     private String authEventEndpoint = "/api/oauth0/auth-events";
+    @NotBlank(message = "URL обязательно должен быть указан")
+    private String authConfirmEndpoint = "/api/oauth0/auth-confirm";
     @NotBlank(message = "Название сервиса обязательно")
     private String serviceName = "Название сервиса";
     private String description;

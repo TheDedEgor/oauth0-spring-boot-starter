@@ -17,13 +17,12 @@ public class CreateAuthSessionDTO {
     private Boolean permanent = false;
     private Long lifetimeSeconds = 300L;
 
-    public CreateAuthSessionDTO(OauthProperties oauthProperties, CreateAuthSessionTimeDTO createAuthSessionTimeDTO) {
+    public CreateAuthSessionDTO(OauthProperties oauthProperties, AuthSessionTimeDTO authSessionTimeDTO) {
         this.authUrl = buildAuthUrl(oauthProperties);
         this.serviceName = oauthProperties.getServiceName();
         this.description = oauthProperties.getDescription();
         this.logoUrl = oauthProperties.getLogoUrl();
-        this.permanent = createAuthSessionTimeDTO.getPermanent();
-        this.lifetimeSeconds = createAuthSessionTimeDTO.getLifetimeSeconds();
+        this.lifetimeSeconds = authSessionTimeDTO.getLifetimeSeconds();
     }
 
     private String buildAuthUrl(OauthProperties oauthProperties) {

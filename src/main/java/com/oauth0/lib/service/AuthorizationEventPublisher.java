@@ -1,58 +1,87 @@
 package com.oauth0.lib.service;
 
-import org.springframework.stereotype.Component;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeoutException;
 
-@Component
+@Log4j2
 public class AuthorizationEventPublisher {
     private final Map<String, SseEmitter> userEmitters = new ConcurrentHashMap<>();
+    private final Map<String, CompletableFuture<Void>> completionFutures = new ConcurrentHashMap<>();
+
+    private final OauthService oauthService;
+
+    public AuthorizationEventPublisher(OauthService oauthService) {
+        this.oauthService = oauthService;
+    }
 
     public SseEmitter subscribe(String uuid) {
-        // Таймаут 30 секунд
-        var emitter = new SseEmitter(30_000L);
+        var timeout = oauthService.getSecondsBeforeExpiredTime(uuid);
+        var emitter = new SseEmitter(timeout * 1000);
 
-        this.userEmitters.put(uuid, emitter);
+        var completionFuture = new CompletableFuture<Void>();
+        userEmitters.put(uuid, emitter);
+        completionFutures.put(uuid, completionFuture);
 
         emitter.onCompletion(() -> {
-            System.out.println("SSE completed for user: " + uuid);
+            log.debug("SSE completed for uuid: {}", uuid);
             userEmitters.remove(uuid);
+            completionFuture.complete(null);
+            completionFutures.remove(uuid);
+            oauthService.removeValidUntil(uuid);
         });
 
         emitter.onTimeout(() -> {
-            System.out.println("SSE timeout for user: " + uuid);
+            log.warn("SSE timed out for uuid: {}", uuid);
             userEmitters.remove(uuid);
+            completionFuture.completeExceptionally(new TimeoutException("SSE connection timed out"));
+            completionFutures.remove(uuid);
+            oauthService.removeValidUntil(uuid);
         });
 
         emitter.onError((e) -> {
-            System.out.println("SSE error for user: " + uuid + ": " + e.getMessage());
+            log.error("SSE error for uuid: {}", uuid, e);
             userEmitters.remove(uuid);
+            completionFuture.completeExceptionally(e);
+            completionFutures.remove(uuid);
+            oauthService.removeValidUntil(uuid);
         });
 
         return emitter;
     }
 
-    public void publish(String uuid) {
+    public CompletableFuture<Void> publish(String uuid) {
         SseEmitter emitter = userEmitters.get(uuid);
         if (emitter != null) {
             try {
-                // Отправляем событие клиенту
-                emitter.send(SseEmitter.event()
-                    .name("auth-success"));
-
-                // Завершаем соединение после отправки
-                emitter.complete();
-
-                // Удаляем из мапы
-                userEmitters.remove(uuid);
+                emitter.send(SseEmitter.event().name("auth-success").data(""));
+                return completionFutures.get(uuid);
             } catch (Exception e) {
-                System.err.println("Error sending SSE event: " + e.getMessage());
+                log.error("SSE error for uuid: {}", uuid, e);
+                // Если отправка не удалась, нужно сразу "провалить" сигнал
+                CompletableFuture<Void> future = completionFutures.remove(uuid);
+                if (future != null) {
+                    future.completeExceptionally(e);
+                }
                 userEmitters.remove(uuid);
+                oauthService.removeValidUntil(uuid);
+                return CompletableFuture.failedFuture(e); // Возвращаем уже проваленный Future
             }
         } else {
-            System.out.println("No active SSE connection for user: " + uuid);
+            log.error("SSE event not found for uuid: {}", uuid);
+            return CompletableFuture.failedFuture(new IllegalStateException("No active SSE connection for user: " + uuid));
         }
+    }
+
+    public void complete(String uuid) {
+        var emitter = userEmitters.get(uuid);
+        if (emitter == null) {
+            throw new IllegalStateException("No active SSE connection for uuid: " + uuid);
+        }
+        emitter.complete();
     }
 }

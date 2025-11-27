@@ -5,7 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateAuthSessionTimeDTO {
-    private Boolean permanent = false;
+public class AuthSessionTimeDTO {
     private Long lifetimeSeconds = 300L;
 }
