@@ -9,14 +9,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
 public class OauthService {
-    private final Map<String, LocalDateTime> validUntilMap = new ConcurrentHashMap<>();
+    private final Map<String, ZonedDateTime> validUntilMap = new ConcurrentHashMap<>();
 
     private final OauthProperties oauthProperties;
 
@@ -27,24 +27,24 @@ public class OauthService {
         return new AuthSessionDTO(List.of(link1, link2), sessionId, sessionInfo.getExpiredAt());
     }
 
-    public void saveValidUntil(String uuid, LocalDateTime validUntil) {
+    public void saveValidUntil(String uuid, ZonedDateTime validUntil) {
         if (validUntil == null) {
             return;
         }
         validUntilMap.put(uuid, validUntil);
     }
 
-    public LocalDateTime removeValidUntil(String uuid) {
+    public ZonedDateTime removeValidUntil(String uuid) {
         return validUntilMap.remove(uuid);
     }
 
-    public LocalDateTime getValidUntil(String uuid) {
+    public ZonedDateTime getValidUntil(String uuid) {
         return validUntilMap.get(uuid);
     }
 
     public Long getSecondsBeforeExpiredTime(String uuid) {
         var validUntil = getValidUntil(uuid);
-        return Duration.between(LocalDateTime.now(), validUntil).getSeconds();
+        return Duration.between(ZonedDateTime.now(), validUntil).getSeconds();
     }
 
     private AuthLinkDTO buildAuthBotLink(String sessionId) {
