@@ -39,7 +39,8 @@ public class RouteAutoConfiguration {
                                            ApiClient apiClient,
                                            OauthProperties properties,
                                            OauthSessionService oauthSessionService,
-                                           OauthService oauthService) {
-        return new RouteController(publisher, apiClient, properties, oauthSessionService, oauthService);
+                                           OauthService oauthService,
+                                           OAuthUserDataProcessor userDataProcessor) {
+        return new RouteController(publisher, apiClient, properties, oauthSessionService, oauthService, userDataProcessor);
     }
 }

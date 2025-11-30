@@ -1,6 +1,7 @@
 package com.oauth0.lib.controller;
 
 import com.oauth0.lib.apiClient.ApiClient;
+import com.oauth0.lib.config.OAuthUserDataProcessor;
 import com.oauth0.lib.config.OauthProperties;
 import com.oauth0.lib.dto.request.AuthSessionTimeDTO;
 import com.oauth0.lib.dto.request.CreateAuthSessionDTO;
@@ -33,6 +34,8 @@ public class RouteController {
 
     private final OauthService oauthService;
 
+    private final OAuthUserDataProcessor  userDataProcessor;
+
     @GetMapping("${oauth0.auth-event-endpoint:/api/oauth0/auth-events}")
     public SseEmitter authEvent(@CookieValue(name = "OAUTH_SESSION_ID") String uuid) {
         return publisher.subscribe(uuid);
@@ -55,6 +58,7 @@ public class RouteController {
     @PostMapping("${oauth0.auth-endpoint:/api/oauth0/auth}")
     public void auth(@RequestBody UserDTO user) throws ExecutionException, InterruptedException, TimeoutException {
         oauthSessionService.create(user.getUuid(), user.getId());
+        userDataProcessor.save(user);
         var sseCompletionFuture = publisher.publish(user.getUuid());
         var timeout = oauthService.getSecondsBeforeExpiredTime(user.getUuid());
         sseCompletionFuture.get(timeout, TimeUnit.SECONDS);
