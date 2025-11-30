@@ -4,6 +4,8 @@ import com.oauth0.lib.model.OauthSession;
 import com.oauth0.lib.repository.OauthSessionRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 public class OauthSessionService {
 
@@ -14,10 +16,9 @@ public class OauthSessionService {
         oauthSessionRepository.save(session);
     }
 
-    public Long auth(String sessionId) {
-        var session = oauthSessionRepository.findById(sessionId)
-            .orElseThrow(() -> new RuntimeException("Session not found"));
-        return session.getProviderId();
+    public Optional<Long> auth(String sessionId) {
+        var optionalSession = oauthSessionRepository.findById(sessionId);
+        return optionalSession.map(OauthSession::getProviderId);
     }
 
     public void logout(String sessionId) {
