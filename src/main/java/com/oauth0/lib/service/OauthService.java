@@ -59,7 +59,7 @@ public class OauthService {
     private AuthLinkDTO buildAuthWebAppLink(String sessionId) {
         var link = UriComponentsBuilder
             .fromUriString(oauthProperties.getTgBaseUrl())
-            .path("web")
+            .path("/web")
             .queryParam("startapp", sessionId)
             .build()
             .toUriString();

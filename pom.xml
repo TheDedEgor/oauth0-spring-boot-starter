@@ -13,7 +13,7 @@
 
     <groupId>com.oauth0.lib</groupId>
     <artifactId>oauth0-spring-boot-starter</artifactId>
-    <version>0.1.2</version>
+    <version>0.1.3</version>
     <name>oauth0-spring-boot-starter</name>
     <description>Oauth0 Spring Boot Starter</description>
     <packaging>jar</packaging>
