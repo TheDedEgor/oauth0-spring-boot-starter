@@ -11,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @NoArgsConstructor
 public class CreateAuthSessionDTO {
     private String authUrl;
+    private String errorUrl;
     private String serviceName;
     private String description;
     private String logoUrl;
@@ -19,6 +20,7 @@ public class CreateAuthSessionDTO {
 
     public CreateAuthSessionDTO(OauthProperties oauthProperties, AuthSessionTimeDTO authSessionTimeDTO) {
         this.authUrl = buildAuthUrl(oauthProperties);
+        this.errorUrl = buildErrorUrl(oauthProperties);
         this.serviceName = oauthProperties.getServiceName();
         this.description = oauthProperties.getDescription();
         this.logoUrl = oauthProperties.getLogoUrl();
@@ -29,6 +31,14 @@ public class CreateAuthSessionDTO {
         return UriComponentsBuilder
             .fromUriString(oauthProperties.getServiceBaseUrl())
             .path(oauthProperties.getAuthCallbackEndpoint())
+            .build()
+            .toUriString();
+    }
+
+    private String buildErrorUrl(OauthProperties oauthProperties) {
+        return UriComponentsBuilder
+            .fromUriString(oauthProperties.getServiceBaseUrl())
+            .path(oauthProperties.getAuthErrorCallbackEndpoint())
             .build()
             .toUriString();
     }

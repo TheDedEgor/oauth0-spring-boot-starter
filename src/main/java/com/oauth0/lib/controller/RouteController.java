@@ -63,7 +63,7 @@ public class RouteController {
         }
         // Сессия истекла
         if (session.getValidUntil().isBefore(ZonedDateTime.now())) {
-            oauthWaitRegistry.remove(sessionId);
+            oauthWaitRegistry.removeAll(sessionId);
 
             var result = new DeferredResult<ResponseEntity<?>>();
             result.setResult(ResponseEntity.status(410).build());

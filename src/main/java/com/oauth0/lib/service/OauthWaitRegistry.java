@@ -50,7 +50,15 @@ public class OauthWaitRegistry {
         result.setErrorResult(errorNotificationDto);
     }
 
+    public void removeSession(String sessionId) {
+        sessions.remove(sessionId);
+    }
+
     public void remove(String sessionId) {
+        waiters.remove(sessionId);
+    }
+
+    public void removeAll(String sessionId) {
         waiters.remove(sessionId);
         sessions.remove(sessionId);
     }
