@@ -2,7 +2,7 @@ package com.oauth0.lib.config;
 
 import com.oauth0.lib.apiClient.ApiClient;
 import com.oauth0.lib.controller.RouteController;
-import com.oauth0.lib.service.AuthorizationEventPublisher;
+import com.oauth0.lib.service.OauthWaitRegistry;
 import com.oauth0.lib.service.OauthService;
 import com.oauth0.lib.service.OauthSessionService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -30,17 +30,17 @@ public class RouteAutoConfiguration {
     }
 
     @Bean
-    public AuthorizationEventPublisher authorizationEventPublisher(OauthService oauthService) {
-        return new AuthorizationEventPublisher(oauthService);
+    public OauthWaitRegistry authWaitRegistry() {
+        return new OauthWaitRegistry();
     }
 
     @Bean
-    public RouteController routeController(AuthorizationEventPublisher publisher,
-                                           ApiClient apiClient,
+    public RouteController routeController(ApiClient apiClient,
                                            OauthProperties properties,
                                            OauthSessionService oauthSessionService,
                                            OauthService oauthService,
-                                           OAuthUserDataProcessor userDataProcessor) {
-        return new RouteController(publisher, apiClient, properties, oauthSessionService, oauthService, userDataProcessor);
+                                           OAuthUserDataProcessor userDataProcessor,
+                                           OauthWaitRegistry oauthWaitRegistry) {
+        return new RouteController(apiClient, properties, oauthSessionService, oauthService, userDataProcessor, oauthWaitRegistry);
     }
 }

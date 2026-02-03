@@ -15,21 +15,30 @@ public class OauthProperties {
     @URL(message = "Должен быть корректный URL")
     @NotBlank(message = "URL обязательно должен быть указан")
     private String oauthBaseUrl = "https://oauth0.ru";
+
     @URL(message = "Должен быть корректный URL")
     @NotBlank(message = "URL обязательно должен быть указан")
     private String serviceBaseUrl;
+
     @URL(message = "Должен быть корректный URL")
     private String tgBaseUrl = "https://t.me/OAuthZeroBot";
+
     @NotBlank(message = "URL обязательно должен быть указан")
     private String createEndpoint = "/api/oauth0/create";
+
     @NotBlank(message = "URL обязательно должен быть указан")
     private String authEndpoint = "/api/oauth0/auth";
+
     @NotBlank(message = "URL обязательно должен быть указан")
-    private String authEventEndpoint = "/api/oauth0/auth-events";
+    private String authCallbackEndpoint = "/api/oauth0/callback";
+
     @NotBlank(message = "URL обязательно должен быть указан")
-    private String authConfirmEndpoint = "/api/oauth0/auth-confirm";
+    private String authErrorCallbackEndpoint = "/api/oauth0/error";
+
     @NotBlank(message = "Название сервиса обязательно")
     private String serviceName = "Название сервиса";
+
     private String description;
+
     private String logoUrl;
 }

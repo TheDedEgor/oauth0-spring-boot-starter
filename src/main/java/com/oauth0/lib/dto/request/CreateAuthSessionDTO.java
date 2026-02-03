@@ -28,7 +28,7 @@ public class CreateAuthSessionDTO {
     private String buildAuthUrl(OauthProperties oauthProperties) {
         return UriComponentsBuilder
             .fromUriString(oauthProperties.getServiceBaseUrl())
-            .path(oauthProperties.getAuthEndpoint())
+            .path(oauthProperties.getAuthCallbackEndpoint())
             .build()
             .toUriString();
     }
